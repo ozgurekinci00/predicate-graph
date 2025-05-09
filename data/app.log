@@ -1,0 +1,140 @@
+2025-05-10 00:48:37,111 - __main__ - INFO - Predicate Relationships Graph
+2025-05-10 00:48:37,111 - __main__ - INFO - Initializing...
+2025-05-10 00:48:37,111 - __main__ - INFO - Extracting predicate devices for all devices in the database
+2025-05-10 00:48:37,111 - __main__ - INFO - Starting bulk predicate device extraction (batch_size=5)
+2025-05-10 00:48:39,528 - __main__ - INFO - Connected to MongoDB, found 171589 devices
+2025-05-10 00:48:41,260 - src.db - INFO - Connected to MongoDB at responder-cluster.olxvljh.mongodb.net
+2025-05-10 00:48:41,261 - __main__ - INFO - Limited to processing 10 devices
+2025-05-10 00:48:41,406 - __main__ - INFO - Found 10 devices with K-numbers to process
+2025-05-10 00:48:41,406 - __main__ - INFO - Processing batch 1/2 (5 devices)
+2025-05-10 00:48:41,407 - __main__ - ERROR - Error in bulk predicate extraction: invalid literal for int() with base 10: 'DE'
+2025-05-10 00:48:41,409 - __main__ - ERROR - Traceback (most recent call last):
+  File "/Users/ozgur/Predicate_Relationships_Graph/src/main.py", line 370, in extract_predicates_bulk
+    results = process_knumbers_for_pdfs(batch_k_numbers, download=False, parse_only=True, extract_predicates=True)
+  File "/Users/ozgur/Predicate_Relationships_Graph/src/pdf_utils.py", line 211, in process_knumbers_for_pdfs
+    result = check_pdf_for_knumber(k_number, download, extract_predicates)
+  File "/Users/ozgur/Predicate_Relationships_Graph/src/pdf_utils.py", line 160, in check_pdf_for_knumber
+    url = get_pdf_url(k_number)
+  File "/Users/ozgur/Predicate_Relationships_Graph/src/pdf_utils.py", line 38, in get_pdf_url
+    year_num = int(year_part)
+ValueError: invalid literal for int() with base 10: 'DE'
+
+2025-05-10 00:49:46,380 - __main__ - INFO - Predicate Relationships Graph
+2025-05-10 00:49:46,380 - __main__ - INFO - Initializing...
+2025-05-10 00:49:46,380 - __main__ - INFO - Extracting predicate devices for all devices in the database
+2025-05-10 00:49:46,381 - __main__ - INFO - Starting bulk predicate device extraction (batch_size=5)
+2025-05-10 00:49:48,814 - __main__ - INFO - Connected to MongoDB, found 171589 devices
+2025-05-10 00:49:50,562 - src.db - INFO - Connected to MongoDB at responder-cluster.olxvljh.mongodb.net
+2025-05-10 00:49:50,563 - __main__ - INFO - Limited to processing 20 devices
+2025-05-10 00:49:50,710 - __main__ - INFO - Found 20 devices with K-numbers to process
+2025-05-10 00:49:50,711 - __main__ - INFO - Skipped 5 devices with irregular K-number formats
+2025-05-10 00:49:50,711 - __main__ - WARNING - No valid K-numbers in this batch, skipping
+2025-05-10 00:49:50,711 - __main__ - INFO - Skipped 5 devices with irregular K-number formats
+2025-05-10 00:49:50,711 - __main__ - WARNING - No valid K-numbers in this batch, skipping
+2025-05-10 00:49:50,711 - __main__ - INFO - Skipped 5 devices with irregular K-number formats
+2025-05-10 00:49:50,711 - __main__ - WARNING - No valid K-numbers in this batch, skipping
+2025-05-10 00:49:50,711 - __main__ - INFO - Skipped 5 devices with irregular K-number formats
+2025-05-10 00:49:50,711 - __main__ - WARNING - No valid K-numbers in this batch, skipping
+2025-05-10 00:49:50,711 - __main__ - INFO - Bulk predicate extraction completed
+2025-05-10 00:49:50,711 - __main__ - INFO - Processed 20/20 devices
+2025-05-10 00:49:50,711 - __main__ - INFO - Found PDFs for 0 devices (0.0%)
+2025-05-10 00:49:50,711 - __main__ - INFO - Found 0 predicate references across 0 devices
+2025-05-10 00:49:50,711 - __main__ - INFO - Average predicates per device with predicates: 0.0
+2025-05-10 00:52:04,529 - __main__ - INFO - Predicate Relationships Graph
+2025-05-10 00:52:04,529 - __main__ - INFO - Initializing...
+2025-05-10 00:52:04,529 - __main__ - INFO - Extracting predicate devices for all devices in the database
+2025-05-10 00:52:04,529 - __main__ - INFO - Starting bulk predicate device extraction (batch_size=5)
+2025-05-10 00:52:06,784 - __main__ - INFO - Connected to MongoDB, found 171589 devices
+2025-05-10 00:52:08,533 - src.db - INFO - Connected to MongoDB at responder-cluster.olxvljh.mongodb.net
+2025-05-10 00:52:08,533 - __main__ - INFO - Limited to processing 10 devices
+2025-05-10 00:52:08,683 - __main__ - INFO - Found 10 devices with K-numbers to process
+2025-05-10 00:52:08,683 - __main__ - INFO - Processing batch 1/2 (5 devices)
+2025-05-10 00:52:08,684 - __main__ - INFO - Sample device from batch: {'_id': ObjectId('681e3658fec9e0b87e35026b'), 'k_number': 'DEN000001'}
+2025-05-10 00:52:08,684 - __main__ - INFO - K-numbers in batch: DEN000001, DEN000002, DEN000004, DEN000006, DEN000007
+2025-05-10 00:52:08,684 - __main__ - INFO - Skipped 5 devices with irregular K-numbers. Examples: DEN000001, DEN000002, DEN000004, DEN000006, DEN000007
+2025-05-10 00:52:08,684 - __main__ - WARNING - No valid K-numbers in this batch, skipping
+2025-05-10 00:52:08,684 - __main__ - INFO - Processing batch 2/2 (5 devices)
+2025-05-10 00:52:08,684 - __main__ - INFO - Sample device from batch: {'_id': ObjectId('681e36effec9e0b87e354adf'), 'k_number': 'DEN000008'}
+2025-05-10 00:52:08,684 - __main__ - INFO - K-numbers in batch: DEN000008, DEN000010, DEN010002, DEN020001, DEN020003
+2025-05-10 00:52:08,684 - __main__ - INFO - Skipped 5 devices with irregular K-numbers. Examples: DEN000008, DEN000010, DEN010002, DEN020001, DEN020003
+2025-05-10 00:52:08,684 - __main__ - WARNING - No valid K-numbers in this batch, skipping
+2025-05-10 00:52:08,684 - __main__ - INFO - Bulk predicate extraction completed
+2025-05-10 00:52:08,684 - __main__ - INFO - Processed 10/10 devices
+2025-05-10 00:52:08,684 - __main__ - INFO - Found PDFs for 0 devices (0.0%)
+2025-05-10 00:52:08,684 - __main__ - INFO - Found 0 predicate references across 0 devices
+2025-05-10 00:52:08,684 - __main__ - INFO - Average predicates per device with predicates: 0.0
+2025-05-10 00:55:14,927 - __main__ - INFO - Predicate Relationships Graph
+2025-05-10 00:55:14,927 - __main__ - INFO - Initializing...
+2025-05-10 00:55:14,927 - __main__ - INFO - Fetching K-numbers by date range
+2025-05-10 00:55:14,927 - __main__ - INFO - Created 10 date ranges from 1976 to 2025 in chunks of 5 year(s)
+2025-05-10 00:55:14,927 - src.api - INFO - Fetching all K-numbers from the OpenFDA API by date ranges
+2025-05-10 00:55:16,821 - src.db - INFO - Connected to MongoDB at responder-cluster.olxvljh.mongodb.net
+2025-05-10 00:55:17,157 - src.api - INFO - Created index on k_number
+2025-05-10 00:55:17,157 - src.api - INFO - Fetching records for date range: 1976-01-01 to 1980-12-31
+2025-05-10 00:55:17,157 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=0, limit=1
+2025-05-10 00:55:18,498 - src.api - INFO - Date range 1976-01-01 to 1980-12-31 has 10465 total records
+2025-05-10 00:55:18,498 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=0, limit=1000
+2025-05-10 00:55:25,765 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:55:25,765 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=0
+2025-05-10 00:55:26,271 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=1000, limit=1000
+2025-05-10 00:55:32,606 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:55:32,606 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=1000
+2025-05-10 00:55:33,110 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=2000, limit=1000
+2025-05-10 00:55:37,685 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:55:37,686 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=2000
+2025-05-10 00:55:38,188 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=3000, limit=1000
+2025-05-10 00:55:44,700 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:55:44,700 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=3000
+2025-05-10 00:55:45,204 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=4000, limit=1000
+2025-05-10 00:55:50,518 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:55:50,520 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=4000
+2025-05-10 00:55:51,072 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=5000, limit=1000
+2025-05-10 00:55:57,604 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:55:57,606 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=5000
+2025-05-10 00:55:58,111 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=6000, limit=1000
+2025-05-10 00:56:04,640 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:04,641 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=6000
+2025-05-10 00:56:05,146 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=7000, limit=1000
+2025-05-10 00:56:11,327 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:11,328 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=7000
+2025-05-10 00:56:11,834 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=8000, limit=1000
+2025-05-10 00:56:17,326 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:17,327 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=8000
+2025-05-10 00:56:17,832 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=9000, limit=1000
+2025-05-10 00:56:23,059 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:23,060 - src.api - INFO - Processed 1000 records from date range 1976-01-01 to 1980-12-31, skip=9000
+2025-05-10 00:56:23,565 - src.api - INFO - Fetching records with decision date between 1976-01-01 and 1980-12-31, skip=10000, limit=1000
+2025-05-10 00:56:29,592 - src.api - INFO - Saved batch to MongoDB: 465 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:29,593 - src.api - INFO - Processed 465 records from date range 1976-01-01 to 1980-12-31, skip=10000
+2025-05-10 00:56:30,095 - src.api - INFO - Completed date range 1976-01-01 to 1980-12-31, fetched 10465 records
+2025-05-10 00:56:30,095 - src.api - INFO - Fetching records for date range: 1981-01-01 to 1985-12-31
+2025-05-10 00:56:30,095 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=0, limit=1
+2025-05-10 00:56:31,111 - src.api - INFO - Date range 1981-01-01 to 1985-12-31 has 19139 total records
+2025-05-10 00:56:31,111 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=0, limit=1000
+2025-05-10 00:56:37,233 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:37,234 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=0
+2025-05-10 00:56:37,736 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=1000, limit=1000
+2025-05-10 00:56:44,424 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:44,425 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=1000
+2025-05-10 00:56:44,930 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=2000, limit=1000
+2025-05-10 00:56:51,471 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:51,472 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=2000
+2025-05-10 00:56:51,977 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=3000, limit=1000
+2025-05-10 00:56:57,804 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:56:57,805 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=3000
+2025-05-10 00:56:58,308 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=4000, limit=1000
+2025-05-10 00:57:04,768 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:57:04,769 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=4000
+2025-05-10 00:57:05,269 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=5000, limit=1000
+2025-05-10 00:57:11,889 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:57:11,890 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=5000
+2025-05-10 00:57:12,395 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=6000, limit=1000
+2025-05-10 00:57:18,109 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:57:18,110 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=6000
+2025-05-10 00:57:18,615 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=7000, limit=1000
+2025-05-10 00:57:25,213 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:57:25,214 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=7000
+2025-05-10 00:57:25,716 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=8000, limit=1000
+2025-05-10 00:57:32,575 - src.api - INFO - Saved batch to MongoDB: 1000 inserted, 0 updated, 0 skipped
+2025-05-10 00:57:32,576 - src.api - INFO - Processed 1000 records from date range 1981-01-01 to 1985-12-31, skip=8000
+2025-05-10 00:57:33,079 - src.api - INFO - Fetching records with decision date between 1981-01-01 and 1985-12-31, skip=9000, limit=1000
