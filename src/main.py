@@ -41,8 +41,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://predicate-relationships-graph.vercel.app",
-        "https://predicate-device-visualizer.vercel.app"
+        "https://predicate-graph.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
