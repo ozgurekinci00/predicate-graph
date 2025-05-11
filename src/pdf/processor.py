@@ -9,10 +9,27 @@ import re
 import logging
 from typing import List, Dict, Any, Optional, Set
 
-from src.processors import normalize_knumber
-
 # Setup logging
 logger = logging.getLogger(__name__)
+
+def normalize_knumber(k_number: str) -> str:
+    """
+    Normalize a K-number to standard format.
+    
+    Args:
+        k_number: The K-number to normalize
+    
+    Returns:
+        Normalized K-number
+    """
+    # Remove any spaces or non-alphanumeric characters
+    k_number = re.sub(r'[^a-zA-Z0-9]', '', k_number)
+    
+    # Ensure K is uppercase
+    if k_number.lower().startswith('k'):
+        k_number = 'K' + k_number[1:]
+    
+    return k_number
 
 def extract_k_number_pattern(text: str) -> List[str]:
     """
@@ -196,7 +213,7 @@ def process_pdf_for_predicates(pdf_data: Dict[str, Any], device_k_number: Option
     Process parsed PDF data to extract predicate device K-numbers.
     
     Args:
-        pdf_data: Dictionary containing parsed PDF data
+        pdf_data: Dictionary containing parsed PDF data with 'text' field
         device_k_number: The K-number of the device being analyzed (to exclude from results)
         
     Returns:
@@ -204,15 +221,11 @@ def process_pdf_for_predicates(pdf_data: Dict[str, Any], device_k_number: Option
     """
     predicates = []
     
-    if not pdf_data or not pdf_data.get('parseable'):
-        logger.warning("PDF data is not parseable")
+    if not pdf_data or not pdf_data.get('text'):
+        logger.warning("No valid PDF data provided")
         return predicates
     
     text = pdf_data.get('text', '')
-    if not text:
-        logger.warning("No text found in PDF data")
-        return predicates
-    
     predicates = extract_predicate_devices(text, device_k_number)
     return predicates
 
