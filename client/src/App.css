@@ -62,3 +62,29 @@
 .animate-fade-in-out {
   animation: fadeInOut 3s ease-in-out forwards;
 }
+
+/* Fix for graph container sizing to prevent layout shifts */
+.graph-container {
+  min-height: 600px;
+  height: 70vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ensure loading spinner maintains consistent layout */
+.loading-container {
+  min-height: 600px;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .graph-container,
+  .loading-container {
+    min-height: 400px;
+    height: 50vh;
+  }
+}

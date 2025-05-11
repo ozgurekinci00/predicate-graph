@@ -59,7 +59,7 @@ Access the application at: http://localhost:3000
    - Install MongoDB on your local machine: [MongoDB Installation Guide](https://docs.mongodb.com/manual/installation/)
    - Start the MongoDB service
    
-   **Option B: Remote MongoDB (recommended for production)**
+   **Option B: Remote MongoDB**
    - Create a MongoDB Atlas account: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
    - Set up a cluster and get your connection URI
 
@@ -130,12 +130,6 @@ GET /api/device/check/{k_number}
 ```
 GET /api/health
 ```
-
-## Documentation
-
-When the server is running, access the API documentation at:
-- Swagger UI: `http://localhost:8002/docs`
-- ReDoc: `http://localhost:8002/redoc`
 
 ## Frontend Features
 

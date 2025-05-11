@@ -324,33 +324,29 @@ const PredicateGraph = ({ graphData, onPredicateClick, isLoading, currentKNumber
   }
   
   return (
-    <div ref={containerRef} className="w-full h-[500px] border border-gray-100 rounded-lg bg-white shadow-sm relative">
+    <div ref={containerRef} className="graph-container relative bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
       {isLoading && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-90 rounded-full p-4 shadow-md">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+        <div className="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-20">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-blue-500 border-blue-200"></div>
         </div>
       )}
-      <div className="absolute top-4 left-4 p-2 text-xs bg-white bg-opacity-90 rounded shadow-sm border border-gray-50">
-        <p className="text-gray-600">Tip: Use mouse wheel to zoom, drag to pan. Use controls to reset view.</p>
-      </div>
-      <div className="absolute bottom-4 right-4 bg-white bg-opacity-90 p-3 rounded shadow-sm border border-gray-50 z-5">
-        <div className="flex items-center mt-1">
+      <svg ref={svgRef} className="w-full h-full" />
+      
+      {/* Information about the node colors */}
+      <div className="absolute bottom-4 right-4 bg-white bg-opacity-80 rounded p-2 text-xs shadow-sm border border-gray-100">
+        <div className="flex items-center mb-1">
           <div className="w-3 h-3 rounded-full bg-blue-600 mr-2"></div>
-          <span className="text-xs text-gray-600">Current Focus</span>
+          <span>Current Device</span>
         </div>
-        <div className="flex items-center mt-1">
-          <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-          <span className="text-xs text-gray-600">Explored Node</span>
+        <div className="flex items-center mb-1">
+          <div className="w-3 h-3 rounded-full bg-green-600 mr-2"></div>
+          <span>Explored Device</span>
         </div>
-        <div className="flex items-center mt-1">
-          <div className="w-3 h-3 rounded-full bg-gray-500 mr-2"></div>
-          <span className="text-xs text-gray-600">Unexplored Node</span>
-        </div>
-        <div className="mt-2 text-xs text-gray-500">
-          <em>Click nodes to explore their predicates</em>
+        <div className="flex items-center">
+          <div className="w-3 h-3 rounded-full bg-gray-600 mr-2"></div>
+          <span>Unexplored Device</span>
         </div>
       </div>
-      <svg ref={svgRef} className="w-full h-full"></svg>
     </div>
   );
 };

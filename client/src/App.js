@@ -447,13 +447,19 @@ function DeviceViewer() {
       
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="lg:w-3/4 transition-all duration-300">
-          <PredicateGraph
-            graphData={buildGraphData}
-            onPredicateClick={handlePredicateClick}
-            isLoading={isLoading}
-            currentKNumber={currentKNumber}
-            exploredNodes={exploredNodes}
-          />
+          {isLoading && !buildGraphData.nodes?.length ? (
+            <div className="loading-container bg-white rounded-lg shadow-sm border border-gray-100">
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-blue-500 border-blue-200"></div>
+            </div>
+          ) : (
+            <PredicateGraph
+              graphData={buildGraphData}
+              onPredicateClick={handlePredicateClick}
+              isLoading={isLoading}
+              currentKNumber={currentKNumber}
+              exploredNodes={exploredNodes}
+            />
+          )}
         </div>
         
         {buildGraphData.currentNode && (
