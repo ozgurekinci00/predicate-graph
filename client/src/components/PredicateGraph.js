@@ -330,6 +330,12 @@ const PredicateGraph = ({ graphData, onPredicateClick, isLoading, currentKNumber
           <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-blue-500 border-blue-200"></div>
         </div>
       )}
+      
+      {/* Tip tooltip */}
+      <div className="absolute top-4 left-4 p-2 text-xs bg-white bg-opacity-90 rounded shadow-sm border border-gray-50 z-10">
+        <p className="text-gray-600">Tip: Use mouse wheel to zoom, drag to pan. Use controls to reset view.</p>
+      </div>
+      
       <svg ref={svgRef} className="w-full h-full" />
       
       {/* Information about the node colors */}
@@ -345,6 +351,11 @@ const PredicateGraph = ({ graphData, onPredicateClick, isLoading, currentKNumber
         <div className="flex items-center">
           <div className="w-3 h-3 rounded-full bg-gray-600 mr-2"></div>
           <span>Unexplored Device</span>
+        </div>
+        
+        {/* Added instruction about clicking nodes */}
+        <div className="mt-2 text-xs text-gray-500">
+          <em>Click nodes to explore their predicates</em>
         </div>
       </div>
     </div>
