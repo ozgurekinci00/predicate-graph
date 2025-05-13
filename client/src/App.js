@@ -2,8 +2,6 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { checkDeviceExists, fetchDevice, saveDevice } from './services/api';
 import PredicateGraph from './components/PredicateGraph';
-// eslint-disable-next-line no-unused-vars
-import DeviceDetails from './components/DeviceDetails';
 import KNumberSearch from './components/KNumberSearch';
 import './App.css';
 
@@ -357,7 +355,7 @@ function DeviceViewer() {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-4 text-gray-600 text-sm">{loadingStatus}</p>
         </div>
       </div>

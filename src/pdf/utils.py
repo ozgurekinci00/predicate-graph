@@ -60,7 +60,7 @@ def fetch_pdf_content(url: str) -> Optional[bytes]:
         The PDF content as bytes if found, None otherwise
     """
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=20)
         
         # Check if request was successful and returned a PDF
         if response.status_code == 200 and response.headers.get('Content-Type', '').lower().startswith('application/pdf'):

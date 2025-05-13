@@ -327,7 +327,7 @@ const PredicateGraph = ({ graphData, onPredicateClick, isLoading, currentKNumber
     <div ref={containerRef} className="graph-container relative bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-20">
-          <div className="animate-spin rounded-full h-10 w-10 border-4 border-t-blue-500 border-blue-200"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
         </div>
       )}
       

@@ -15,6 +15,47 @@ from src.utils.config import MONGODB_URI, MONGODB_DB, MONGODB_DEVICES_COLLECTION
 # Setup logging
 logger = logging.getLogger(__name__)
 
+# Global connection instance for connection pooling
+_mongo_client = None
+_db = None
+_devices_collection = None
+_is_initialized = False
+
+def initialize_db_connection():
+    """
+    Initialize the MongoDB connection and collections once
+    to enable connection pooling.
+    
+    Returns:
+        bool: True if connection was successful, False otherwise
+    """
+    global _mongo_client, _db, _devices_collection, _is_initialized
+    
+    if _is_initialized:
+        return True
+    
+    try:
+        _mongo_client = MongoClient(MONGODB_URI, maxPoolSize=10)
+        # Test connection
+        _mongo_client.admin.command('ping')
+        _db = _mongo_client[MONGODB_DB]
+        _devices_collection = _db[MONGODB_DEVICES_COLLECTION]
+        
+        # Ensure index on k_number exists
+        if 'k_number_1' not in _devices_collection.index_information():
+            _devices_collection.create_index("k_number", unique=True)
+            logger.info("Created index on k_number field")
+        
+        logger.info(f"Connected to MongoDB at {MONGODB_URI.split('@')[1].split('/?')[0] if '@' in MONGODB_URI else MONGODB_URI}")
+        _is_initialized = True
+        return True
+    except PyMongoError as e:
+        logger.error(f"Failed to connect to MongoDB: {str(e)}")
+        _is_initialized = False
+        return False
+
+# Initialize connection at module load time
+initialize_db_connection()
 
 def get_database_connection() -> MongoClient:
     """
@@ -23,15 +64,12 @@ def get_database_connection() -> MongoClient:
     Returns:
         MongoDB client instance
     """
-    try:
-        client = MongoClient(MONGODB_URI)
-        # Test connection
-        client.admin.command('ping')
-        logger.info(f"Connected to MongoDB at {MONGODB_URI.split('@')[1].split('/?')[0] if '@' in MONGODB_URI else MONGODB_URI}")
-        return client
-    except PyMongoError as e:
-        logger.error(f"Failed to connect to MongoDB: {str(e)}")
-        raise
+    global _mongo_client
+    
+    if not _is_initialized:
+        initialize_db_connection()
+    
+    return _mongo_client
 
 
 def get_devices_collection():
@@ -41,16 +79,12 @@ def get_devices_collection():
     Returns:
         MongoDB collection for devices
     """
-    client = get_database_connection()
-    db = client[MONGODB_DB]
-    collection = db[MONGODB_DEVICES_COLLECTION]
+    global _devices_collection
     
-    # Ensure index on k_number exists
-    if 'k_number_1' not in collection.index_information():
-        collection.create_index("k_number", unique=True)
-        logger.info("Created index on k_number field")
+    if not _is_initialized:
+        initialize_db_connection()
     
-    return collection
+    return _devices_collection
 
 
 def save_device_to_mongodb(device_data: Dict[str, Any]) -> bool:
@@ -67,29 +101,27 @@ def save_device_to_mongodb(device_data: Dict[str, Any]) -> bool:
         logger.warning("Invalid device data: missing k_number")
         return False
     
+    if not _is_initialized and not initialize_db_connection():
+        logger.error("Cannot save device: MongoDB connection not available")
+        return False
+    
     try:
         collection = get_devices_collection()
         
-        # Process date field if present
-        if 'decision_date' in device_data and device_data['decision_date']:
-            try:
-                from datetime import datetime
-                date_obj = datetime.strptime(device_data['decision_date'], '%Y-%m-%d')
-                device_data['sortable_date'] = date_obj
-            except (ValueError, TypeError):
-                pass
+        # Create a copy to avoid modifying the original
+        device_to_save = device_data.copy()
         
         # Upsert the document (update if exists, insert if not)
         result = collection.update_one(
-            {'k_number': device_data['k_number']},
-            {'$set': device_data},
+            {'k_number': device_to_save['k_number']},
+            {'$set': device_to_save},
             upsert=True
         )
         
         if result.upserted_id:
-            logger.info(f"Inserted device {device_data['k_number']} into MongoDB")
+            logger.info(f"Inserted device {device_to_save['k_number']} into MongoDB")
         else:
-            logger.info(f"Updated device {device_data['k_number']} in MongoDB")
+            logger.info(f"Updated device {device_to_save['k_number']} in MongoDB")
         
         return True
         
@@ -108,6 +140,10 @@ def get_device_by_knumber(k_number: str) -> Optional[Dict[str, Any]]:
     Returns:
         Device dictionary or None if not found
     """
+    if not _is_initialized and not initialize_db_connection():
+        logger.error("Cannot get device: MongoDB connection not available")
+        return None
+        
     collection = get_devices_collection()
     return collection.find_one({"k_number": k_number})
 
@@ -130,10 +166,16 @@ def test_mongodb_connection() -> Dict[str, Any]:
         "collection_exists": False
     }
     
+    # Use existing connection if available
+    global _mongo_client, _is_initialized
+    
     try:
-        # Get client and test connection
-        client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
-        client.admin.command('ping')
+        client = _mongo_client if _is_initialized else MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+        
+        # Only ping if using a new connection
+        if not _is_initialized:
+            client.admin.command('ping')
+            
         result["success"] = True
         
         # Check if database exists

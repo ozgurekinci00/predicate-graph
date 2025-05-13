@@ -15,15 +15,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import requests
 import uvicorn
-from pymongo import MongoClient
-import pymongo.errors
 
 # Add the parent directory to sys.path to allow imports from the project
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
-from src.utils.config import setup_logging, MONGODB_URI, MONGODB_DB, MONGODB_DEVICES_COLLECTION
+from src.utils.config import setup_logging
 from src.pdf.utils import get_pdf_url, fetch_pdf_content, parse_pdf
 from src.pdf.processor import process_pdf_for_predicates, normalize_knumber
+from src.db.mongodb import (
+    test_mongodb_connection, 
+    get_device_by_knumber, 
+    save_device_to_mongodb,
+    initialize_db_connection
+)
 
 # Setup logging
 setup_logging()
@@ -52,26 +56,12 @@ app.add_middleware(
 OPENFDA_API_BASE_URL = "https://api.fda.gov/device/510k.json"
 DEFAULT_TIMEOUT = 30  # seconds
 
-# MongoDB client
-try:
-    mongo_client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
-    # Validate connection
-    mongo_client.server_info()
-    db = mongo_client[MONGODB_DB]
-    devices_collection = db[MONGODB_DEVICES_COLLECTION]
-    logger.info(f"Connected to MongoDB at {MONGODB_URI}")
-except pymongo.errors.ServerSelectionTimeoutError as e:
-    logger.error(f"MongoDB connection error: {e}")
-    logger.warning("Continuing without MongoDB - some features will be limited")
-    mongo_client = None
-    db = None
-    devices_collection = None
-except Exception as e:
-    logger.error(f"Unexpected MongoDB error: {e}")
-    logger.warning("Continuing without MongoDB - some features will be limited")
-    mongo_client = None
-    db = None
-    devices_collection = None
+# Initialize MongoDB connection once at startup
+mongodb_available = initialize_db_connection()
+if not mongodb_available:
+    logger.warning("MongoDB connection failed - some features will be limited")
+else:
+    logger.info("MongoDB connection initialized successfully")
 
 # Define response models using Pydantic
 class DeviceResponse(BaseModel):
@@ -81,7 +71,6 @@ class DeviceResponse(BaseModel):
     decision_description: Optional[str] = Field(None, description="The decision description")
     device_name: Optional[str] = Field(None, description="The device name")
     product_code: Optional[str] = Field(None, description="The product code")
-    sortable_date: Optional[str] = Field(None, description="The sortable date (ISO format)")
     statement_or_summary: Optional[str] = Field(None, description="Type of document (Statement or Summary)")
     predicate_devices: List[str] = Field(default_factory=list, description="List of predicate device K-numbers")
 
@@ -208,9 +197,9 @@ async def get_device(k_number: str, refresh_predicates: bool = False):
     existing_device = None
     
     # Check if MongoDB is available and device exists
-    if devices_collection is not None:
+    if mongodb_available:
         try:
-            existing_device = devices_collection.find_one({"k_number": k_number})
+            existing_device = get_device_by_knumber(k_number)
             if existing_device:
                 logger.info(f"Found device with K-number {k_number} in MongoDB with {len(existing_device.get('predicate_devices', []))} predicates")
         except Exception as e:
@@ -242,18 +231,19 @@ async def get_device(k_number: str, refresh_predicates: bool = False):
         logger.info(f"Predicate extraction complete for {k_number}: {predicate_devices}")
     
     # If we have an existing device, update it with new predicates
-    if existing_device and needs_predicate_refresh and devices_collection is not None:
+    if existing_device and needs_predicate_refresh and mongodb_available:
         try:
             existing_device.pop("_id", None)
             existing_device["predicate_devices"] = predicate_devices
             
-            # Update MongoDB
-            devices_collection.update_one(
-                {"k_number": k_number},
-                {"$set": {"predicate_devices": predicate_devices}}
-            )
-            logger.info(f"Updated device {k_number} in MongoDB with {len(predicate_devices)} predicates")
+            # Update MongoDB using save function
+            save_success = save_device_to_mongodb(existing_device)
             
+            if save_success:
+                logger.info(f"Updated device {k_number} in MongoDB with {len(predicate_devices)} predicates")
+            else:
+                logger.warning(f"Failed to update device {k_number} in MongoDB")
+                
             return existing_device
         except Exception as e:
             logger.error(f"Error updating MongoDB: {e}")
@@ -275,33 +265,13 @@ async def get_device(k_number: str, refresh_predicates: bool = False):
         "predicate_devices": predicate_devices
     }
     
-    # Add sortable_date if decision_date exists
-    if response["decision_date"]:
-        try:
-            date_obj = datetime.strptime(response["decision_date"], '%Y-%m-%d')
-            response["sortable_date"] = date_obj.isoformat() + ".000Z"
-        except (ValueError, TypeError):
-            logger.warning(f"Could not parse decision date for {k_number}: {response['decision_date']}")
-    
     # Save to MongoDB if available
-    if devices_collection is not None:
-        try:
-            # Check if device already exists (double-check)
-            existing_device = devices_collection.find_one({"k_number": k_number})
-            
-            if existing_device:
-                # Update existing device
-                devices_collection.update_one(
-                    {"k_number": k_number},
-                    {"$set": response}
-                )
-                logger.info(f"Updated device {k_number} in MongoDB")
-            else:
-                # Insert new device
-                devices_collection.insert_one(response)
-                logger.info(f"Inserted device {k_number} into MongoDB")
-        except Exception as e:
-            logger.error(f"Error saving to MongoDB: {e}")
+    if mongodb_available:
+        save_success = save_device_to_mongodb(response)
+        if save_success:
+            logger.info(f"Saved device {k_number} to MongoDB")
+        else:
+            logger.warning(f"Failed to save device {k_number} to MongoDB")
     
     logger.info(f"Returning response for {k_number} with {len(predicate_devices)} predicates")
     return response
@@ -319,7 +289,7 @@ async def save_device(device: DeviceResponse = Body(...)):
     Returns:
         DeviceResponse: The saved device information
     """
-    if devices_collection is None:
+    if not mongodb_available:
         raise HTTPException(status_code=503, detail="MongoDB not available")
         
     try:
@@ -329,20 +299,13 @@ async def save_device(device: DeviceResponse = Body(...)):
         # Ensure K-number is normalized
         device_dict["k_number"] = normalize_knumber(device_dict["k_number"])
         
-        # Check if device already exists
-        existing_device = devices_collection.find_one({"k_number": device_dict["k_number"]})
+        # Save device using the db module function
+        save_success = save_device_to_mongodb(device_dict)
         
-        if existing_device:
-            # Update existing device
-            devices_collection.update_one(
-                {"k_number": device_dict["k_number"]},
-                {"$set": device_dict}
-            )
-            logger.info(f"Updated device with K-number {device_dict['k_number']} in MongoDB")
-        else:
-            # Insert new device
-            devices_collection.insert_one(device_dict)
-            logger.info(f"Inserted device with K-number {device_dict['k_number']} in MongoDB")
+        if not save_success:
+            raise Exception("Failed to save device to MongoDB")
+            
+        logger.info(f"Saved device with K-number {device_dict['k_number']} to MongoDB")
         
         return device
     
@@ -366,7 +329,7 @@ async def check_device(k_number: str):
     # Normalize K-number format
     k_number = normalize_knumber(k_number)
     
-    if devices_collection is None:
+    if not mongodb_available:
         return {
             "exists": False,
             "k_number": k_number,
@@ -374,8 +337,8 @@ async def check_device(k_number: str):
         }
         
     try:
-        # Check if device exists in MongoDB
-        existing_device = devices_collection.find_one({"k_number": k_number})
+        # Check if device exists in MongoDB using db module function
+        existing_device = get_device_by_knumber(k_number)
         
         return {
             "exists": existing_device is not None,
@@ -393,7 +356,18 @@ async def check_device(k_number: str):
          description="Endpoint to check if the API is running correctly")
 async def health_check():
     """Health check endpoint to verify the API is working."""
-    return {"status": "ok", "version": "1.0.0"}
+    # Include MongoDB status in health check
+    db_status = test_mongodb_connection()
+    
+    return {
+        "status": "ok", 
+        "version": "1.0.0",
+        "mongodb": {
+            "connected": db_status["success"],
+            "database": db_status["database"],
+            "device_count": db_status["device_count"] if db_status["success"] else 0
+        }
+    }
 
 def main():
     """Start the FastAPI application with uvicorn server."""
