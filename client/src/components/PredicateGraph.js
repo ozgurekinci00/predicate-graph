@@ -7,23 +7,8 @@ const PredicateGraph = ({ graphData, onPredicateClick, isLoading, currentKNumber
   const [renderKey, setRenderKey] = useState(0);
   const initialRenderRef = useRef(true);
   
-  // Extract dependency values to fix ESLint warnings
-  const nodeIds = useMemo(() => {
-    return graphData?.nodes?.map(n => n.id) || [];
-  }, [graphData?.nodes]);
-  
-  const linkPaths = useMemo(() => {
-    return graphData?.links?.map(l => `${l.source}-${l.target}`) || [];
-  }, [graphData?.links]);
-  
-  // Memoize the graph data to prevent unnecessary recalculations
-  const memoizedGraphData = useMemo(() => graphData, [
-    // Only depend on the actual data, not loading state
-    JSON.stringify(nodeIds),
-    JSON.stringify(linkPaths),
-    currentKNumber,
-    graphData
-  ]);
+  // Memoize the graph data - only recalculate when the actual data changes
+  const memoizedGraphData = useMemo(() => graphData, [graphData]);
   
   // When loading finishes and data changes, update the render key to trigger a clean render
   useEffect(() => {
